@@ -105,8 +105,9 @@ void ClearSpeed()
 
 void CommitSpeed()
 {
-    wheelPWM1.target = robotInfo.VL;
-    wheelPWM2.target = -robotInfo.VR;
+    wheelPWM2.target = robotInfo.VL;
+    wheelPWM1.target = -robotInfo.VR;
+
 }
 
 void Stop()
@@ -138,7 +139,7 @@ void MoveForwardV2(double speed, double r, double dis)
     wheelPWM2.pulse = 0;
     while (1) {
         double meanDis = (fabs(wheelPWM1.pulse) + fabs(wheelPWM2.pulse)) / 2;
-        if (fabs(wheelPWM1.pulse) > dis) break;
+        if (fabs(meanDis) > dis) break;
     }
     Stop();
 }
@@ -151,15 +152,15 @@ void RobotInit()
     wheelPWM1.target = 0;
     wheelPWM1.minPWM = -1000;
     wheelPWM1.maxPWM = 1000;
-    wheelPWM1.kp = 600;
-    wheelPWM1.ki = 80;
+    wheelPWM1.kp = 960;
+    wheelPWM1.ki = 240;
     wheelPWM1.kd = 0;
 
     wheelPWM2.target = 0;
     wheelPWM2.minPWM = -1000;
     wheelPWM2.maxPWM = 1000;
-    wheelPWM2.kp = 600;
-    wheelPWM2.ki = 80;
+    wheelPWM2.kp = 960;
+    wheelPWM2.ki = 240;
     wheelPWM2.kd = 0;
 }
 
@@ -219,23 +220,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 
 
 
-/*
- * 实际坐标：
- * 8 8.5
- * 9.5 18
- * 8.5 27.5
- * 4 37
- *
- * -6 44.5
- * -20.5 49
- * -34 49
- * -45 44.5
- *
- * 修正坐标：
- *
- *
- */
-
 /* USER CODE END 0 */
 
 /**
@@ -286,22 +270,15 @@ int main(void)
     RobotInit();
 
 
-//    double speedList[] = {9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,    9,    9,    9,    9,    9,    9,    9,    9,   9,};
-//    double rList[] = {    1,  11,  11,  13,  13,  15,  15,  15,  16,  16,  17,   19,   19,   20,   22,   23,   23,   22,   21,  21, 0};
-//    double disList[] = {700, 700, 700, 700, 700, 700, 700, 700, 700, 700, 700, 1600, 1600, 1600, 1600, 1600, 1600, 1600, 1600, 800,};
-
-
-    double speedList[] = {9,   9,   9,   9,   9,   9,   9,   9,   9,   9,   9,    9,    9,    9,    9,    9,    9,    9,    9,   9,};
-    double rList[] = {    1,  11,  11,  13,  13,  15,  15,  15,  16,  16,  17,   18,   18,   19,   19,   19,   19,   20,   20,  20, 0};
-    double disList[] = {700, 700, 700, 700, 700, 700, 700, 700, 700, 700, 700, 1600, 1600, 1600, 1600, 1600, 1600, 1600, 1600, 800,};
+    double speedList[] = {400, 400,   400,   400,   400,   400,   400,   400,   400,   400,   400,   400,   400,   400,   400,   400, };
+    double rList[] = {    1,   6.7,     7,     7,     8,    12,    13,    15,    17,    22,    23,    24,    24,    24,    24,    24, 0};
+    double disList[] = {8000, 8000, 25300, 25300, 55300, 88000, 88000, 88000, 88000, 88000, 88000, 88000, 88000, 88000, 88000, 10000, };
 
     for (int i = 0; rList[i] != 0; ++i) {
         MoveForwardV2(speedList[i], rList[i], disList[i]);
     }
 
     Stop();
-
-
 
   /* USER CODE END 2 */
 
